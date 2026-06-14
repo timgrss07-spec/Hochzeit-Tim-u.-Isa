@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tischsuche · Hochzeit Tim & Isa</title>
+<style>
+:root{--bg:#fff7f1;--card:#ffffff;--ink:#3d2b24;--muted:#846b5f;--accent:#9b5847;--accent2:#d8a08d;--soft:#fae7df;--ok:#426b53;--bad:#9b493f;--shadow:0 18px 55px rgba(80,45,35,.14)}
+*{box-sizing:border-box}html{font-size:16px}body{margin:0;min-height:100vh;color:var(--ink);font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at top left,#ffe1d5 0,rgba(255,225,213,0) 35%),radial-gradient(circle at top right,#f1c9bd 0,rgba(241,201,189,0) 32%),linear-gradient(135deg,#fffaf7,var(--bg));}
+main{width:min(860px,calc(100% - 28px));margin:0 auto;padding:42px 0 56px}.hero{text-align:center;padding:26px 8px 18px}.kicker{text-transform:uppercase;letter-spacing:.18em;color:var(--accent);font-weight:700;font-size:.78rem}h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(2.4rem,10vw,5rem);font-weight:500;line-height:.95;margin:.28em 0 .12em}.subtitle{max-width:620px;margin:0 auto;color:var(--muted);font-size:1.08rem;line-height:1.55}.card{background:rgba(255,255,255,.94);border:1px solid rgba(155,88,71,.16);border-radius:28px;box-shadow:var(--shadow)}.search-card{padding:24px;margin:18px auto 24px}.field-label{display:block;font-weight:700;color:var(--accent);margin:0 0 9px}.search-row{display:flex;gap:12px}input{flex:1;min-width:0;border:1px solid #e5c0b3;background:#fff;border-radius:18px;padding:17px 18px;font-size:1.12rem;color:var(--ink);outline:none}input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(155,88,71,.15)}button{appearance:none;-webkit-appearance:none;border:0;border-radius:18px;padding:0 24px;background:var(--accent);color:#fff;font-weight:700;font-size:1rem;cursor:pointer;min-height:58px}button:active{transform:translateY(1px)}.result{margin-top:18px;min-height:92px;border-radius:22px;padding:18px;background:#fff8f4;border:1px dashed #ddb5a8;font-size:1.02rem;line-height:1.5}.result-title{font-family:Georgia,'Times New Roman',serif;color:var(--ok);font-size:2rem;display:block;margin-bottom:4px}.not-found .result-title{color:var(--bad)}.hint{color:var(--muted);font-size:.92rem;margin-top:7px}.suggestions{display:flex;flex-wrap:wrap;gap:9px;margin-top:13px}.choice{border:1px solid #dcb4a6;background:#fff;color:var(--ink);border-radius:999px;padding:10px 13px;min-height:0;font-size:.95rem}.details{margin-top:22px}.details summary{cursor:pointer;color:var(--accent);font-weight:700;margin-bottom:12px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.table-card{padding:16px}.table-card h2{font-family:Georgia,'Times New Roman',serif;color:var(--accent);font-weight:500;margin:0 0 10px}.names{display:flex;flex-wrap:wrap;gap:8px}.name{background:var(--soft);border-radius:999px;padding:6px 9px;font-size:.88rem}footer{text-align:center;margin-top:24px;color:var(--muted);font-size:.82rem}noscript{display:block;margin-top:16px;padding:14px;border-radius:16px;background:#fff2ec;color:var(--bad);font-weight:700}@media(max-width:620px){main{width:min(100% - 22px,860px);padding-top:26px}.search-card{padding:18px;border-radius:22px}.search-row{display:block}button{width:100%;margin-top:10px;padding:15px 18px}input{font-size:1rem}.result-title{font-size:1.75rem}}
+</style>
+</head>
+<body>
+<main>
+<section class="hero">
+<div class="kicker">Hochzeit · 11.07.2026</div>
+<h1>Findet euren Tisch</h1>
+<p class="subtitle">Gebt euren Namen ein. Wir zeigen euch direkt, an welchem Tisch ihr sitzt.</p>
+</section>
+<section class="card search-card">
+<form id="searchForm" autocomplete="off">
+<label class="field-label" for="nameInput">Name eingeben</label>
+<div class="search-row"><input id="nameInput" name="gast" autocomplete="name" placeholder="z. B. Finn, Isa oder Anna Maria"><button id="searchBtn" type="submit">Suchen</button></div>
+</form>
+<noscript>JavaScript ist deaktiviert. Bitte aktiviert JavaScript, damit die Tischsuche funktioniert.</noscript>
+<div id="result" class="result" aria-live="polite">Noch kein Name eingegeben.</div>
+</section>
+<details class="details"><summary>Alle Tische anzeigen</summary><section id="tableGrid" class="grid" aria-label="Alle Tische"></section></details>
+<footer>Tim & Isa · Sitzplan Blossom Variante 1</footer>
+</main>
+<script>
+var TISCHE = {
+  "Tisch 1": [
+    "Hoang",
+    "Sina",
+    "Justus",
+    "Hannah",
+    "Finn P.",
+    "Lauritz",
+    "Jana"
+  ],
+  "Tisch 2": [
+    "Steffen",
+    "Leni",
+    "Maxim",
+    "Lahja",
+    "Bocki",
+    "Martin",
+    "Larissa",
+    "Nico",
+    "Alina"
+  ],
+  "Tisch 3": [
+    "Tarek",
+    "Lynn",
+    "Greta",
+    "Max P.",
+    "Patricia",
+    "Max S.",
+    "Nele",
+    "Torge",
+    "JP",
+    "Anneke",
+    "Mats",
+    "Wencke"
+  ],
+  "Tisch 4": [
+    "Heike",
+    "Dirk",
+    "Maren",
+    "Sven",
+    "Petra",
+    "Stefan"
+  ],
+  "Tisch 5": [
+    "Jan G-Z",
+    "Moritz G.",
+    "Tim",
+    "Isa",
+    "Sabine",
+    "Jan G.",
+    "Evy",
+    "Tara",
+    "Niklas",
+    "Laura",
+    "Moritz S.",
+    "Elli"
+  ],
+  "Tisch 6": [
+    "Nicole",
+    "Christian",
+    "Oma Moni",
+    "Kerstin",
+    "Holger",
+    "Stephan",
+    "Martina",
+    "Oma Anne",
+    "Johannes",
+    "Babette"
+  ],
+  "Tisch 7": [
+    "Louisa",
+    "Lena",
+    "Leoni",
+    "Tabea",
+    "Helen"
+  ],
+  "Tisch 8": [
+    "Pia",
+    "Nick",
+    "Felix",
+    "Olli",
+    "Paulina",
+    "Laura M.",
+    "Marit"
+  ],
+  "Tisch 9": [
+    "Yvonn",
+    "Sonja",
+    "Rasmus",
+    "Mariatta",
+    "Jörg G.",
+    "Maike",
+    "Tina",
+    "Geli",
+    "Andrea",
+    "Dominik",
+    "Marc",
+    "Christin",
+    "Finn W.",
+    "Regina",
+    "Burkhard",
+    "Wolfgang",
+    "Jörg M.",
+    "Michael"
+  ],
+  "Tisch 10": [
+    "Oke",
+    "Mads",
+    "Finn M.",
+    "Anna Maria",
+    "Nele K.",
+    "Bent",
+    "Lina",
+    "Juliane"
+  ]
+};
+function byId(id){return document.getElementById(id);}
+function html(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function norm(s){
+  s = String(s || '').toLowerCase();
+  var map = {'ä':'a','ö':'o','ü':'u','ß':'ss','á':'a','à':'a','â':'a','é':'e','è':'e','ê':'e','í':'i','ì':'i','î':'i','ó':'o','ò':'o','ô':'o','ú':'u','ù':'u','û':'u'};
+  var out='', ch;
+  for (var i=0;i<s.length;i++){ch=s.charAt(i); out += map[ch] || ch;}
+  return out.replace(/[^a-z0-9]+/g,' ').replace(/^ +| +$/g,'').replace(/ +/g,' ');
+}
+function guestList(){
+  var list=[], t, i;
+  for(t in TISCHE){ if(TISCHE.hasOwnProperty(t)){ for(i=0;i<TISCHE[t].length;i++){ list.push({name:TISCHE[t][i], table:t, key:norm(TISCHE[t][i])}); } } }
+  return list;
+}
+var GAESTE = guestList();
+function search(q){
+  var query = norm(q), exact=[], starts=[], contains=[], i, g;
+  if(!query){return {kind:'empty', items:[]};}
+  for(i=0;i<GAESTE.length;i++){
+    g=GAESTE[i];
+    if(g.key === query){ exact.push(g); }
+    else if(g.key.indexOf(query) === 0){ starts.push(g); }
+    else if(g.key.indexOf(query) >= 0 || query.indexOf(g.key) >= 0){ contains.push(g); }
+  }
+  if(exact.length){return {kind: exact.length===1 ? 'one':'many', items:exact};}
+  if(starts.length){return {kind: starts.length===1 ? 'one':'many', items:starts};}
+  if(contains.length){return {kind: contains.length===1 ? 'one':'many', items:contains};}
+  return {kind:'none', items:[]};
+}
+function render(){
+  var input = byId('nameInput');
+  var result = byId('result');
+  var r = search(input.value);
+  result.className = 'result';
+  if(r.kind === 'empty'){result.innerHTML = 'Bitte gib einen Namen ein.'; return false;}
+  if(r.kind === 'one'){
+    var g = r.items[0];
+    result.innerHTML = '<span class="result-title">'+html(g.table)+'</span>'+html(g.name)+', hier sitzt du.<div class="hint">Schön, dass du da bist!</div>';
+    return false;
+  }
+  if(r.kind === 'many'){
+    var s = 'Es gibt mehrere passende Namen. Bitte wähle aus:<div class="suggestions">';
+    for(var i=0;i<r.items.length;i++){s += '<button class="choice" type="button" data-name="'+html(r.items[i].name)+'">'+html(r.items[i].name)+' · '+html(r.items[i].table)+'</button>';}
+    s += '</div><div class="hint">Bei „Finn“ erscheinen zum Beispiel alle Finns.</div>';
+    result.innerHTML = s;
+    var choices = result.getElementsByTagName('button');
+    for(var j=0;j<choices.length;j++){choices[j].onclick = function(){input.value=this.getAttribute('data-name'); render();};}
+    return false;
+  }
+  result.className = 'result not-found';
+  result.innerHTML = '<span class="result-title">Nicht gefunden</span>Diesen Namen habe ich leider nicht gefunden.<div class="hint">Probiere nur den Vornamen oder prüfe die Schreibweise.</div>';
+  return false;
+}
+function renderTables(){
+  var grid=byId('tableGrid'), s='', t, i;
+  for(t in TISCHE){ if(TISCHE.hasOwnProperty(t)){ s += '<article class="card table-card"><h2>'+html(t)+'</h2><div class="names">'; for(i=0;i<TISCHE[t].length;i++){s += '<span class="name">'+html(TISCHE[t][i])+'</span>'; } s += '</div></article>'; }}
+  grid.innerHTML=s;
+}
+function start(){
+  var form=byId('searchForm'), input=byId('nameInput');
+  form.onsubmit=function(e){ if(e && e.preventDefault){e.preventDefault();} render(); return false; };
+  input.onkeyup=function(){ render(); };
+  renderTables();
+}
+if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', start); } else { start(); }
+</script>
+</body>
+</html>
